@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Entrar · Rubi Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --ruby:#B80F3C; --ruby-dark:#8E0B2E; --ruby-deep:#5E0720;
+  --rose:#F2BFCB; --blush:#FFF4F6; --blush-2:#FBE3E9;
+  --bg:#FFF4F6; --surface:#FFFFFF; --ink:#3A0A18; --muted:#7A5560; --line:#EBCCD4;
+  --err:#B3261E; --ok:#1F7A52;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#1E0A10; --surface:#2A1019; --ink:#FBE9EE; --muted:#C9A3AF; --line:#4A2330;
+    --blush-2:#3A1522; --ruby:#E0355F; --ruby-dark:#C42650; --err:#FF8A80; --ok:#6FD3A4; color-scheme:dark;
+  }
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5}
+h1,h2,.logo{font-family:'Fraunces',Georgia,serif;margin:0}
+button,input{font:inherit}
+:focus-visible{outline:3px solid var(--ruby);outline-offset:2px}
+
+.page{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);min-height:100vh}
+
+/* painel da marca */
+.brand{position:relative;overflow:hidden;color:#fff;padding:48px 56px;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  background:radial-gradient(120% 90% at 20% 0%,#D4194C 0%,var(--ruby) 45%,var(--ruby-deep) 100%)}
+.logo{display:flex;align-items:center;gap:10px;font-size:28px}
+.logo svg{width:30px;height:30px}
+.hero h1{font-size:clamp(34px,4vw,54px);line-height:1.08;max-width:13ch}
+.hero p{max-width:36ch;margin:16px 0 0;color:#FFE3EA}
+.gem{position:absolute;right:-70px;bottom:-40px;width:min(60%,420px);height:auto;pointer-events:none}
+.perks{display:flex;gap:22px;flex-wrap:wrap;font-size:14px;color:#FFE3EA;position:relative}
+.perks span{display:flex;align-items:center;gap:8px}
+.perks i{width:8px;height:8px;border-radius:2px;background:var(--rose);transform:rotate(45deg)}
+
+.brand .logo{font-size:clamp(34px,4.6vw,58px);gap:14px;position:relative}
+.brand .logo svg{width:1em;height:1em}
+
+/* formulário */
+.side{display:flex;align-items:center;justify-content:center;padding:40px 24px}
+.card{width:100%;max-width:410px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--blush-2);border-radius:14px;padding:4px;margin-bottom:28px}
+.tabs button{border:0;background:none;padding:11px;border-radius:11px;font-weight:700;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--ruby);box-shadow:0 1px 3px rgba(94,7,32,.15)}
+.card h2{font-size:30px}
+.sub{color:var(--muted);margin:6px 0 24px}
+
+.gbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:12px;min-height:52px;padding:0 18px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font-weight:700;cursor:pointer;transition:border-color .15s,background .15s}
+.gbtn:hover{border-color:var(--ruby);background:var(--blush)}
+.gbtn svg{width:22px;height:22px;flex:none}
+.sep{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:14px;margin:22px 0}
+.sep::before,.sep::after{content:"";flex:1;height:1px;background:var(--line)}
+
+.field{margin-bottom:16px}
+.field.name{display:none}
+.signup .field.name{display:block}
+label{display:block;font-weight:500;font-size:14px;margin:0 0 6px}
+.inp{position:relative}
+input{width:100%;min-height:50px;padding:0 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+input:focus{outline:none;border-color:var(--ruby);box-shadow:0 0 0 4px rgba(184,15,60,.14)}
+input[aria-invalid="true"]{border-color:var(--err)}
+.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--ruby);font-weight:700;font-size:14px;padding:10px;cursor:pointer}
+.err{display:none;color:var(--err);font-size:13px;margin-top:5px}
+.field.bad .err{display:block}
+.row{display:flex;justify-content:space-between;align-items:center;margin:-4px 0 20px;font-size:14px}
+.row label{display:flex;align-items:center;gap:8px;margin:0;font-weight:400}
+.row input{width:18px;height:18px;min-height:0;accent-color:var(--ruby)}
+.link{background:none;border:0;color:var(--ruby);font-weight:700;cursor:pointer;padding:6px 0}
+.signup .row .forgot{display:none}
+
+.btn{width:100%;min-height:52px;border:0;border-radius:12px;background:var(--ruby);color:#fff;font-weight:700;cursor:pointer;transition:background .15s}
+.btn:hover{background:var(--ruby-dark)}
+.btn[disabled],.gbtn[disabled]{opacity:.7;cursor:progress}
+.msg{margin-top:16px;padding:12px 14px;border-radius:12px;font-size:14px;display:none}
+.msg.on{display:block}
+.msg.ok{background:var(--blush-2);color:var(--ink)}
+.msg.bad{background:rgba(179,38,30,.12);color:var(--err)}
+.legal{margin-top:22px;font-size:13px;color:var(--muted);text-align:center}
+.spin{width:18px;height:18px;border:3px solid var(--line);border-top-color:var(--ruby);border-radius:50%;animation:s .8s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:2.5s}}
+
+@media (max-width:860px){
+  .page{grid-template-columns:1fr}
+  .brand{padding:26px 24px 30px;gap:22px}
+  .hero h1{font-size:30px;max-width:16ch}
+  .hero p{display:none}
+  .perks{display:none}
+  .gem{width:170px;right:-30px;bottom:-26px}
+  .side{padding:28px 20px 40px;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 32 32"><path d="M8 4h16l6 8-14 17L2 12z" fill="currentColor"/><path d="M2 12h28M11 12l5 17 5-17M8 4l3 8M24 4l-3 8" stroke="#B80F3C" stroke-width="1.2" fill="none" opacity=".5"/></symbol>
+</svg>
+
+<main class="page">
+  <section class="brand" aria-label="Rubi Store">
+    <div class="logo"><svg><use href="#mark"/></svg>Rubi Store</div>
+    <svg class="gem" viewBox="0 0 200 180" aria-hidden="true">
+      <g fill="#fff">
+        <path d="M60 20h40L80 70z" opacity=".22"/><path d="M100 20h40l-20 50z" opacity=".12"/>
+        <path d="M60 20L80 70H10z" opacity=".1"/><path d="M140 20l50 50h-70z" opacity=".18"/>
+        <path d="M100 20l20 50H80z" opacity=".3"/>
+        <path d="M10 70h70l20 100z" opacity=".14"/><path d="M80 70h40l-20 100z" opacity=".26"/><path d="M120 70h70l-90 100z" opacity=".08"/>
+      </g>
+    </svg>
+  </section>
+
+  <section class="side">
+    <div class="card" id="card">
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" id="t-in" aria-selected="true">Entrar</button>
+        <button type="button" role="tab" id="t-up" aria-selected="false">Criar conta</button>
+      </div>
+      <h2 id="title">Bem-vinda de volta</h2>
+      <p class="sub" id="sub">Entre com o Google ou com seu e-mail.</p>
+
+      <button class="gbtn" id="g" type="button">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.2 5.5-4.7 7.2l7.6 5.9c4.4-4.1 6.9-10.1 6.9-17.6z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
+        <span id="gtxt">Continuar com o Google</span>
+      </button>
+
+      <div class="sep">ou use seu e-mail</div>
+
+      <form id="f" novalidate>
+        <div class="field name" id="fn">
+          <label for="nm">Nome</label>
+          <input id="nm" autocomplete="name" placeholder="Como podemos te chamar?">
+          <div class="err">Digite seu nome.</div>
+        </div>
+        <div class="field" id="fe">
+          <label for="em">E-mail</label>
+          <input id="em" type="email" autocomplete="email" placeholder="voce@email.com">
+          <div class="err">Digite um e-mail válido, como voce@email.com.</div>
+        </div>
+        <div class="field" id="fp">
+          <label for="pw">Senha</label>
+          <div class="inp">
+            <input id="pw" type="password" autocomplete="current-password" placeholder="Mínimo de 6 caracteres">
+            <button class="eye" id="eye" type="button" aria-label="Mostrar senha">Mostrar</button>
+          </div>
+          <div class="err">A senha precisa ter pelo menos 6 caracteres.</div>
+        </div>
+        <div class="row">
+          <label><input id="keep" type="checkbox" checked> Manter conectada</label>
+          <button class="link forgot" id="forgot" type="button">Esqueci a senha</button>
+        </div>
+        <button class="btn" id="go" type="submit">Entrar</button>
+      </form>
+      <div class="msg ok" id="msg" role="status"></div>
+      <p class="legal">Ao continuar, você aceita os Termos de uso e a Política de privacidade da Rubi Store.</p>
+      <p class="legal" id="ver" style="margin-top:6px;opacity:.7"></p>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword,
+  createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail,
+  setPersistence, browserLocalPersistence, browserSessionPersistence, onAuthStateChanged,
+  signInWithRedirect, getRedirectResult
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+// O link da loja vem do config.js; se o arquivo faltar, a página continua funcionando
+let LINK_DA_LOJA = "";
+try { ({ LINK_DA_LOJA } = await import("./config.js")); } catch (e) { console.warn("config.js não encontrado"); }
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB2u4h080Yo69K_P7IvDhL-RPAFhG8I9as",
+  authDomain: location.hostname.endsWith(".web.app") ? location.hostname : "rubi-store-login.firebaseapp.com",
+  projectId: "rubi-store-login",
+  storageBucket: "rubi-store-login.firebasestorage.app",
+  messagingSenderId: "754795317608",
+  appId: "1:754795317608:web:7c967b313313b731eeaedd",
+  measurementId: "G-L135BYT0FK"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+
+const $ = i => document.getElementById(i);
+const card = $('card');
+let mode = 'in';
+
+/* ---------- interface ---------- */
+function setMode(m){
+  mode = m;
+  card.classList.toggle('signup', m === 'up');
+  $('t-in').setAttribute('aria-selected', m === 'in');
+  $('t-up').setAttribute('aria-selected', m === 'up');
+  $('title').textContent = m === 'in' ? 'Bem-vinda de volta' : 'Crie sua conta';
+  $('sub').textContent = m === 'in' ? 'Entre com o Google ou com seu e-mail.' : 'Leva menos de um minuto.';
+  $('go').textContent = m === 'in' ? 'Entrar' : 'Criar conta';
+  $('pw').autocomplete = m === 'in' ? 'current-password' : 'new-password';
+  $('msg').classList.remove('on');
+}
+$('t-in').onclick = () => setMode('in');
+$('t-up').onclick = () => setMode('up');
+
+$('eye').onclick = function(){
+  const show = $('pw').type === 'password';
+  $('pw').type = show ? 'text' : 'password';
+  this.textContent = show ? 'Ocultar' : 'Mostrar';
+  this.setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha');
+};
+
+const emailOk = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+function flag(id, input, bad){
+  $(id).classList.toggle('bad', bad);
+  $(input).setAttribute('aria-invalid', bad);
+  return !bad;
+}
+function validate(){
+  let ok = true;
+  if (mode === 'up') ok = flag('fn', 'nm', $('nm').value.trim().length < 2) && ok;
+  ok = flag('fe', 'em', !emailOk($('em').value)) && ok;
+  ok = flag('fp', 'pw', $('pw').value.length < 6) && ok;
+  return ok;
+}
+[['nm','fn'],['em','fe'],['pw','fp']].forEach(([i,f]) => $(i).addEventListener('input', () => {
+  $(f).classList.remove('bad'); $(i).setAttribute('aria-invalid', 'false');
+}));
+
+function say(t, bad){
+  const m = $('msg');
+  m.textContent = t;
+  m.className = 'msg on ' + (bad ? 'bad' : 'ok');
+}
+
+const ERROS = {
+  'auth/invalid-email': 'Esse e-mail não parece válido.',
+  'auth/user-not-found': 'Não encontramos uma conta com esse e-mail.',
+  'auth/wrong-password': 'E-mail ou senha incorretos.',
+  'auth/invalid-credential': 'E-mail ou senha incorretos.',
+  'auth/email-already-in-use': 'Já existe uma conta com esse e-mail. Tente entrar.',
+  'auth/weak-password': 'Escolha uma senha com pelo menos 6 caracteres.',
+  'auth/too-many-requests': 'Muitas tentativas. Aguarde um pouco e tente de novo.',
+  'auth/popup-closed-by-user': 'A janela do Google foi fechada antes de terminar.',
+  'auth/cancelled-popup-request': 'A janela do Google foi fechada antes de terminar.',
+  'auth/popup-blocked': 'O navegador bloqueou a janela do Google. Libere os pop-ups e tente de novo.',
+  'auth/network-request-failed': 'Sem conexão. Verifique sua internet.',
+  'auth/unauthorized-domain': 'Este endereço ainda não está autorizado no Firebase (Authentication > Configurações > Domínios autorizados).',
+  'auth/operation-not-allowed': 'Esse tipo de login ainda não foi ativado no Firebase (Authentication > Método de login).'
+};
+const erroTexto = e => {
+  console.error('Erro de login:', e);
+  return (ERROS[e.code] || 'Algo deu errado. Tente novamente.') + ' [' + (e.code || e.message) + ']';
+};
+
+/* ---------- banco de dados ---------- */
+// Cria o documento da cliente em users/{uid} no primeiro acesso
+async function garantirCliente(user, provedor, nome){
+  const ref = doc(db, 'users', user.uid);
+  const snap = await getDoc(ref);
+  if (!snap.exists()){
+    await setDoc(ref, {
+      nome: nome || user.displayName || '',
+      email: user.email || '',
+      foto: user.photoURL || '',
+      provedor: provedor,
+      criadoEm: serverTimestamp()
+    });
+  }
+}
+
+async function concluir(user, nome){
+  try { sessionStorage.removeItem('rubiBounce'); } catch (e) {}
+  const primeiro = (nome || user.displayName || '').split(' ')[0];
+  say('Tudo certo' + (primeiro ? ', ' + primeiro : '') + '! Você está conectada.');
+  // Cliente sem endereço cadastrado vai para a tela de endereço; as demais entram na loja
+  let destino = 'endereco.html';
+  try {
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (snap.exists() && snap.data().endereco) destino = LINK_DA_LOJA || 'loja.html';
+  } catch (e) {}
+  setTimeout(() => { location.href = destino; }, 800);
+}
+
+async function definirPersistencia(){
+  await setPersistence(auth, $('keep').checked ? browserLocalPersistence : browserSessionPersistence);
+}
+
+/* ---------- ações ---------- */
+// Em localhost e no GitHub Pages usa a janela pop-up; no Firebase Hosting (web.app) usa redirecionamento na mesma aba.
+const USAR_POPUP = !location.hostname.endsWith('.web.app');
+console.log('Rubi login v6 · modo:', USAR_POPUP ? 'popup' : 'redirect', '· domínio:', location.hostname);
+$('g').onclick = function(){
+  const btn = this, t = $('gtxt'), antes = 'Continuar com o Google';
+  btn.disabled = true; t.textContent = 'Aguarde…';
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  const volta = () => { btn.disabled = false; t.textContent = antes; };
+  if (USAR_POPUP) {
+    // sem "await" antes: o navegador só abre o pop-up se vier direto do clique
+    signInWithPopup(auth, provider)
+      .then(async r => { await garantirCliente(r.user, 'google'); await concluir(r.user); })
+      .catch(e => say(erroTexto(e), true))
+      .finally(volta);
+    return;
+  }
+  signInWithRedirect(auth, provider).catch(e => { say(erroTexto(e), true); volta(); });
+};
+
+// Se voltou do login por redirecionamento, conclui aqui
+getRedirectResult(auth).then(async r => {
+  if (r && r.user) { await garantirCliente(r.user, 'google'); await concluir(r.user); }
+}).catch(e => say(erroTexto(e), true));
+
+// Persistência definida antes do clique (e atualizada quando a cliente mexe na caixinha)
+definirPersistencia().catch(() => {});
+$('keep').addEventListener('change', () => definirPersistencia().catch(() => {}));
+
+$('f').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!validate()) return;
+  const b = $('go'), antes = b.textContent;
+  b.disabled = true; b.textContent = 'Aguarde…';
+  const email = $('em').value.trim(), senha = $('pw').value;
+  try {
+    await definirPersistencia();
+    if (mode === 'in'){
+      const r = await signInWithEmailAndPassword(auth, email, senha);
+      await garantirCliente(r.user, 'email');
+      await concluir(r.user);
+    } else {
+      const nome = $('nm').value.trim();
+      const r = await createUserWithEmailAndPassword(auth, email, senha);
+      await updateProfile(r.user, { displayName: nome });
+      await garantirCliente(r.user, 'email', nome);
+      await concluir(r.user, nome);
+    }
+  } catch (err) {
+    say(erroTexto(err), true);
+  } finally {
+    b.disabled = false; b.textContent = antes;
+  }
+});
+
+$('forgot').onclick = async () => {
+  if (!flag('fe', 'em', !emailOk($('em').value))) return;
+  try {
+    await sendPasswordResetEmail(auth, $('em').value.trim());
+    say('Enviamos um link para redefinir a senha. Confira seu e-mail e a caixa de spam.');
+  } catch (e) {
+    say(erroTexto(e), true);
+  }
+};
+
+// Se a cliente já está conectada quando abre o login, segue direto para a próxima etapa.
+// (rubiBounce evita vai-e-volta entre páginas caso alguma outra página não reconheça o login)
+try {
+  const b = sessionStorage.getItem('rubiBounce');
+  if (b) say('A página "' + b + '" não encontrou sua conta conectada e te mandou de volta ao login. Domínio: ' + location.hostname + '.', true);
+} catch (e) {}
+$('ver').textContent = 'v7 · ' + (USAR_POPUP ? 'pop-up' : 'redirecionamento') + ' · ' + location.hostname;
+
+let primeiraLeitura = true;
+onAuthStateChanged(auth, user => {
+  if (primeiraLeitura && user) {
+    let voltou = false;
+    try { voltou = !!sessionStorage.getItem('rubiBounce'); } catch (e) {}
+    if (!voltou) concluir(user);
+  }
+  primeiraLeitura = false;
+});
+</script>
+</body>
+</html>
